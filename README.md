@@ -13,3 +13,23 @@ A visually immersive, high-octane web experience featuring the most iconic cars 
 - 📱 Fully responsive design  
 
 
+## 🛠️ Technologies Used
+
+- **HTML5** – Page structure  
+- **CSS3 / Bootstrap 5** – Layout, responsiveness, and styling  
+- **Font Awesome** – Car icons and visuals  
+- **JavaScript** – Interactive speedometer and nitro effects  
+- **Google Fonts** – Custom racing-inspired typography  
+
+## 🚀 Getting Started
+
+1. Clone or download this repository.
+2. Make sure you have an `images` folder with the correct car images and video file.
+3. Open `index.html` directly in your browser.
+4. Optionally, host it using GitHub Pages or any static site hosting.
+
+> ⚠️ **Important:** Ensure paths in `<img src="">` and `<video src="">` are correct relative to your local folder structure.
+
+
+
+
