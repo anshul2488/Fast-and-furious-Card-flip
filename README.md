@@ -12,6 +12,13 @@ A visually immersive, high-octane web experience featuring the most iconic cars 
 - 🔥 Nitro boost animation  
 - 📱 Fully responsive design  
 
+Fast-and-furious-Card-flip/
+├── index.html         # Main HTML file
+├── styles.css         # Custom styles and animations
+├── images/            # Car images and video assets
+├── auto_pull.sh       # Shell script for auto-updates (optional)
+└── README.md          # Project guide and documentation
+
 
 ## 🛠️ Technologies Used
 
