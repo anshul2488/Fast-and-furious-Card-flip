@@ -31,5 +31,20 @@ A visually immersive, high-octane web experience featuring the most iconic cars 
 > ⚠️ **Important:** Ensure paths in `<img src="">` and `<video src="">` are correct relative to your local folder structure.
 
 
+## ✨ Future Improvements
+
+- Add more car models from later Fast movies  
+- Implement dark/light theme toggle  
+- Add audio effects for nitro boost and revving sounds  
+- Optimize for performance on low-end devices  
+
+## 📜 License
+
+This project is open-source and available under the [MIT License](LICENSE).
+
+---
+
+> _"It don't matter if you win by an inch or a mile. Winning's winning."_ – Dominic Toretto
+
 
 
