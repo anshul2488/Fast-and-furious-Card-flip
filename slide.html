@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+        .slide {
+            background-color: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .header {
+            background: linear-gradient(90deg, #1a3a6e, #2c5394);
+            color: white;
+            padding: 15px 30px;
+            border-bottom: 3px solid #f0f0f0;
+            position: relative;
+        }
+        .header h1 {
+            font-size: 28px;
+            margin: 0;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        .header h1::after {
+            content: "";
+            display: block;
+            width: 80px;
+            height: 3px;
+            background-color: #f0f0f0;
+            margin-top: 8px;
+        }
+        .content {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        .initiative {
+            display: flex;
+            gap: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px dashed #e0e0e0;
+        }
+        .initiative-image {
+            width: 200px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 6px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+        }
+        .initiative-details {
+            flex: 1;
+        }
+        .initiative-title {
+            background-color: #1a3a6e;
+            color: white;
+            padding: 8px 15px;
+            font-size: 18px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+        .initiative-points {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .initiative-points li {
+            margin-bottom: 10px;
+            position: relative;
+        }
+        .initiative-points li::before {
+            content: "•";
+            color: #1a3a6e;
+            font-weight: bold;
+            position: absolute;
+            left: -20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th {
+            background-color: #e6eef7;
+            padding: 8px;
+            text-align: center;
+            border: 1px solid #ccc;
+        }
+        td {
+            padding: 8px;
+            text-align: center;
+            border: 1px solid #ccc;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .footer {
+            background-color: #1a3a6e;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide">
+        <div class="header">
+            <h1>INITIATIVES | 2024-25</h1>
+        </div>
+        <div class="content">
+            <div class="initiative">
+                <img src="/api/placeholder/200/150" alt="Chai Adda" class="initiative-image">
+                <div class="initiative-details">
+                    <div class="initiative-title">Chai Adda</div>
+                    <ul class="initiative-points">
+                        <li>To tap LAS at Chai adda location in late evenings.</li>
+                        <li>Visibility in Chai Adda outlets.</li>
+                        <li>MI Activity in evening from 4.00 pm to 11.00 pm</li>
+                    </ul>
+                    <table>
+                        <tr>
+                            <th>Chai Adda</th>
+                            <th>Contracted</th>
+                            <th>Plan 2025</th>
+                        </tr>
+                        <tr>
+                            <td>Surat</td>
+                            <td>100</td>
+                            <td>30</td>
+                            <td>40</td>
+                        </tr>
+                        <tr>
+                            <td>Baroda</td>
+                            <td>60</td>
+                            <td>5</td>
+                            <td>40</td>
+                        </tr>
+                        <tr>
+                            <td>ROG 2 Major towns</td>
+                            <td>30</td>
+                            <td>2</td>
+                            <td>15</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="initiative">
+                <img src="/api/placeholder/200/150" alt="Daman Bar & Rest" class="initiative-image">
+                <div class="initiative-details">
+                    <div class="initiative-title">Daman – Bar & Rest</div>
+                    <ul class="initiative-points">
+                        <li>Major tourist location for Gujarat person.</li>
+                        <li>Visibility in Outlets which are outside Pub and Restaurant.</li>
+                        <li>MI Activity on Friday & Saturday only (Planned will start in May 2025)</li>
+                    </ul>
+                    <table>
+                        <tr>
+                            <th></th>
+                            <th>Bar with outlet</th>
+                            <th>Contracted</th>
+                            <th>Plan 2025</th>
+                        </tr>
+                        <tr>
+                            <td>Daman</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Silvassa</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            KEY TAKEAWAY
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fast & Furious Car Showcase</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Racing+Sans+One&display=swap');
+        
+        :root {
+            --toyota-color: #d81f29;
+            --nissan-color: #c31631;
+            --dodge-color: #be0029;
+            --primary-color: #ff0000;
+            --secondary-color: #ff5500;
+        }
+        
+        body {
+            background: #000000;
+            color: #fff;
+            font-family: 'Racing Sans One', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            padding: 50px 0;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Dynamic Background */
+        .background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            overflow: hidden;
+        }
+        
+        .background-video {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.4;
+        }
+        
+        .noise-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('/api/placeholder/400/400');
+            background-size: 100px;
+            opacity: 0.2;
+            mix-blend-mode: overlay;
+            z-index: -1;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.7) 100%);
+            z-index: -1;
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+        
+        .page-header h1 {
+            font-size: 4.5rem;
+            font-weight: 800;
+            color: #fff;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.7), 0 0 20px rgba(255, 0, 0, 0.5);
+            letter-spacing: 2px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .page-header h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            border-radius: 2px;
+        }
+        
+        .page-header h1 span {
+            display: block;
+            font-size: 2rem;
+            color: var(--primary-color);
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+        
+        .page-header p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+        
+        /* Card Row */
+        .card-row {
+            display: flex;
+            overflow-x: auto;
+            gap: 20px;
+            padding: 20px 0;
+            margin-bottom: 30px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-color) rgba(255,255,255,0.1);
+        }
+        
+        .card-row::-webkit-scrollbar {
+            height: 8px;
+        }
+        
+        .card-row::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+        }
+        
+        .card-row::-webkit-scrollbar-thumb {
+            background-color: var(--primary-color);
+            border-radius: 4px;
+        }
+        
+        /* Cards */
+        .card-container {
+            perspective: 2000px;
+            margin-bottom: 30px;
+            height: 500px;
+            min-width: 300px;
+            flex: 0 0 auto;
+            width: calc(33.33% - 14px);
+        }
+        
+        .card-flip {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.9s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-style: preserve-3d;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            border-radius: 15px;
+        }
+        
+        .card-container:hover .card-flip {
+            transform: rotateY(180deg);
+        }
+        
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+        
+        .card-front {
+            background-color: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid rgba(255, 0, 0, 0.3);
+            position: relative;
+        }
+        
+        .card-front::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.7));
+            z-index: 1;
+        }
+        
+        .card-front::after {
+            content: 'REV IT UP';
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            background-color: rgba(255, 0, 0, 0.8);
+            padding: 10px 25px;
+            border-radius: 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            z-index: 2;
+        }
+        
+        .card-container:hover .card-front::after {
+            opacity: 1;
+            transform: translateX(-50%) translateY(-10px);
+        }
+        
+        .car-name {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 2rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+            z-index: 10;
+        }
+        
+        .car-type {
+            position: absolute;
+            top: 60px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 1rem;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.7);
+            z-index: 10;
+        }
+        
+        .card-front img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s ease;
+            filter: brightness(0.9) contrast(1.1);
+        }
+        
+        .card-container:hover .card-front img {
+            transform: scale(1.2) rotate(5deg);
+            filter: brightness(0.7) blur(3px);
+        }
+        
+        .card-back {
+            transform: rotateY(180deg);
+            display: flex;
+            flex-direction: column;
+            padding: 30px;
+            color: white;
+            background: #111111;
+            overflow-y: auto;
+        }
+        
+        .toyota .card-back {
+            background: linear-gradient(135deg, #000000 0%, var(--toyota-color) 120%);
+        }
+        
+        .nissan .card-back {
+            background: linear-gradient(135deg, #000000 0%, var(--nissan-color) 120%);
+        }
+        
+        .dodge .card-back {
+            background: linear-gradient(135deg, #000000 0%, var(--dodge-color) 120%);
+        }
+        
+        .car-logo {
+            width: 80px;
+            height: 80px;
+            background-color: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            align-self: center;
+            border: 2px solid rgba(255,255,255,0.2);
+            box-shadow: 0 0 15px rgba(255,255,255,0.1);
+        }
+        
+        .car-logo i {
+            font-size: 40px;
+            color: white;
+        }
+        
+        .card-content h5 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-align: center;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+        
+        .card-content .subtitle {
+            text-align: center;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            color: rgba(255,255,255,0.8);
+            font-style: italic;
+        }
+        
+        .info-section {
+            margin-bottom: 20px;
+        }
+        
+        .info-section h6 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            padding-bottom: 5px;
+        }
+        
+        .info-item {
+            display: flex;
+            margin-bottom: 8px;
+        }
+        
+        .info-item strong {
+            width: 140px;
+            font-weight: 600;
+        }
+        
+        .movie-appearances {
+            background-color: rgba(0,0,0,0.3);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .movie-appearances h6 {
+            margin-bottom: 10px;
+            color: var(--primary-color);
+            border-bottom: none;
+        }
+        
+        .movie-list {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        
+        .movie-list li {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .movie-list li::before {
+            content: "🎬";
+            margin-right: 8px;
+        }
+        
+        .stats-bar {
+            height: 8px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 4px;
+            margin-bottom: 15px;
+            position: relative;
+        }
+        
+        .stats-fill {
+            height: 100%;
+            border-radius: 4px;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            position: relative;
+            box-shadow: 0 0 8px rgba(255,0,0,0.5);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 8px rgba(255,0,0,0.5); }
+            50% { box-shadow: 0 0 15px rgba(255,0,0,0.8); }
+            100% { box-shadow: 0 0 8px rgba(255,0,0,0.5); }
+        }
+        
+        .stats-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+        
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 1s ease-in both;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .slide-in {
+            animation: slideIn 1s ease-out both;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(-100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .card-container:nth-child(1) { animation-delay: 0.2s; }
+        .card-container:nth-child(2) { animation-delay: 0.4s; }
+        .card-container:nth-child(3) { animation-delay: 0.6s; }
+        .card-container:nth-child(4) { animation-delay: 0.8s; }
+        .card-container:nth-child(5) { animation-delay: 1s; }
+        
+        /* Car Selector */
+        .car-selector {
+            margin: 30px auto;
+            max-width: 800px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,0,0,0.2);
+        }
+        
+        .car-selector h4 {
+            text-align: center;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            color: var(--primary-color);
+        }
+        
+        .selector-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .selector-btn {
+            background: rgba(255,255,255,0.1);
+            border: 2px solid transparent;
+            padding: 8px 16px;
+            border-radius: 20px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .selector-btn:hover, .selector-btn.active {
+            background: var(--primary-color);
+            border-color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 10px rgba(255,0,0,0.5);
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+        
+        .footer .quote {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+        
+        /* Nitro Button */
+        .nitro-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--primary-color);
+            border: none;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+            z-index: 100;
+        }
+        
+        .nitro-button:hover {
+            background: var(--secondary-color);
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.8);
+            transform: scale(1.1);
+        }
+        
+        .nitro-button i {
+            margin-right: 8px;
+        }
+        
+        /* Speedometer */
+        .speedometer {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 3px solid var(--primary-color);
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 20px rgba(255,0,0,0.5);
+            z-index: 100;
+        }
+        
+        .speed-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 5px;
+        }
+        
+        .speed-unit {
+            font-size: 0.9rem;
+            color: var(--primary-color);
+        }
+        
+        /* Racing Line */
+        .racing-line {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 10px;
+            background: repeating-linear-gradient(
+                90deg,
+                var(--primary-color) 0px,
+                var(--primary-color) 50px,
+                black 50px,
+                black 100px
+            );
+            opacity: 0.7;
+            z-index: 50;
+        }
+        
+        /* Show More Cars Button */
+        .show-more {
+            display: block;
+            width: 200px;
+            margin: 0 auto 40px;
+            background: transparent;
+            border: 2px solid var(--primary-color);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .show-more:hover {
+            background: var(--primary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255,0,0,0.5);
+        }
+        
+        /* Media Queries */
+        @media (max-width: 992px) {
+            .card-container {
+                height: 450px;
+                min-width: 280px;
+                width: calc(50% - 10px);
+            }
+            
+            .page-header h1 {
+                font-size: 3.5rem;
+            }
+            
+            .speedometer {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .speed-value {
+                font-size: 1.8rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .card-container {
+                height: 400px;
+                min-width: 250px;
+            }
+            
+            .page-header h1 {
+                font-size: 3rem;
+            }
+            
+            .page-header p {
+                font-size: 1rem;
+            }
+            
+            .speedometer {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .card-container {
+                width: 100%;
+                min-width: 220px;
+            }
+            
+            .selector-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .selector-btn {
+                width: 80%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Dynamic Background -->
+    <div class="background-container">
+        <video class="background-video" autoplay loop muted>
+            <source src="C:\Users\Anshul Shinde\Desktop\SEM 6\FS\images\cyberpunk-night-city.1920x1080.mp4" type="video/mp4">
+        </video>
+        <div class="noise-overlay"></div>
+    </div>
+    
+    <!-- Racing Line -->
+    <div class="racing-line"></div>
+    
+    <!-- Speedometer -->
+    <div class="speedometer">
+        <div class="speed-value" id="speed-value">0</div>
+        <div class="speed-unit">MPH</div>
+    </div>
+    
+    <div class="container">
+        <div class="page-header">
+            <h1 class="fade-in">FAST & FURIOUS <span>Legendary Cars</span></h1>
+            <p class="fade-in">Experience the iconic vehicles that defined street racing culture and powered the Fast Saga.</p>
+        </div>
+        
+        <!-- Car Selector -->
+        <div class="car-selector slide-in">
+            <h4>Select Your Ride</h4>
+            <div class="selector-buttons">
+                <button class="selector-btn active" data-filter="all">All Cars</button>
+                <button class="selector-btn" data-filter="toyota">Toyota</button>
+                <button class="selector-btn" data-filter="nissan">Nissan</button>
+                <button class="selector-btn" data-filter="dodge">Dodge</button>
+                <button class="selector-btn" data-filter="other">Other</button>
+            </div>
+        </div>
+        
+        <!-- Card Row layout for side-by-side display -->
+        <div class="card-row" id="car-cards">
+            <!-- Toyota Supra Card -->
+            <div class="card-container toyota fade-in" data-brand="toyota">
+                <div class="card-flip">
+                    <div class="card-front">
+                        <div class="car-name">Toyota Supra</div>
+                        <div class="car-type">Hero Car</div>
+                        <img src="/C:\Users\Anshul Shinde\Desktop\SEM 6\FS\images\supra.jpg" alt="Toyota Supra">
+                    </div>
+                    <div class="card-back">
+                        <div class="car-logo">
+                            <i class="fas fa-car-side"></i>
+                        </div>
+                        <div class="card-content">
+                            <h5>Toyota Supra</h5>
+                            <p class="subtitle">"You never had your car"</p>
+                            
+                            <div class="info-section">
+                                <h6>Car Specs</h6>
+                                <div class="info-item">
+                                    <strong>Model:</strong>
+                                    <span>1994 Toyota Supra MK IV</span>
+                                </div>
+                                <div class="info-item">
+                                    <strong>Engine:</strong>
+                                    <span>3.0L 2JZ-GTE Twin-Turbo I6</span>
+                                </div>
+                                <div class="info-item">
+                                    <strong>Horsepower:</strong>
+                                    <span>320 HP (Stock) / 600+ HP (Modified)</span>
+                                </div>
+                                <div class="info-item">
+                                    <strong>0-60 MPH:</strong>
+                                    <span>4.6 seconds (Stock)</span>
+                                </div>
+                                <div class="info-item">
+                                    <strong>Top Speed:</strong>
+                                    <span>160 MPH (Limited)</span>
+                                </div>
+                            </div>
+                            
+                            <div class="info-section">
+                                <h6>Performance Rating</h6>
+                                <div class="stats-label">
+                                    <span>Speed</span>
+                                    <span>9/10</span>
+                                </div>
+                                <div class="stats-bar">
+                                    <div class="stats-fill" style="width: 90%"></div>
+                                </div>
+                                
+                                <div class="stats-label">
+                                    <span>Acceleration</span>
+                                    <span>8.5/10</span>
+                                </div>
+                                <div class="stats-bar">
+                                    <div class="stats-fill" style="width: 85%"></div>
+                                </div>
+                                
+                                <div class="stats-label">
+                                    <span>Handling</span>
+                                    <span>7.5/10</span>
+                                </div>
+                                <div class="stats-bar">
+                                    <div class="stats-fill" style="width: 75%"></div>
+                                </div>
+                                
+                                <div class="stats-label">
+                                    <span>Modding Potential</span>
+                                    <span>10/10</span>
+                                </div>
+                                <div class="stats-bar">
+                                    <div class="stats-fill" style="width: 100%"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="movie-appearances">
+                                <h6>Fast Saga Appearances</h6>
+                                <ul class="movie-list">
+                                    <li>The Fast and the Furious (2001) - Brian O'Conner</li>
+                                    <li>2 Fast 2 Furious (2003) - Cameo</li>
+                                    <li>Fast & Furious (2009) - Flashback</li>
+                                    <li>Furious 7 (2015) - Tribute scene</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Nissan GT-R Card -->
+            <div class="card-container nissan fade-in" data-brand="nissan">
+                <div class="card-flip">
+                    <div class="card-front">
+                        <div class="car-name">Nissan GT-R</div>
+                        <div class="car-type">Precision Machine</div>
+                        <img src="/C:\Users\Anshul Shinde\Desktop\SEM 6\FS\images\gtr.jpg" alt="Nissan GT-R">
+                    </div>
+                    <div class="card-back">
+                        <div class="car-logo">
+                            <i class="fas fa-tachometer-alt"></i>
+                        </div>
+                        <div class="card-content">
+                            <h5>Nissan GT-R</h5>
+                            <p class="subtitle">"Godzilla on wheels"</p>
+                            
+                            <div class="info-section">
+                                <h6>Car Specs</h6>
+                                <div class="info-item">
+                                    <strong>Model:</strong>
+                                    <span>2009 Nissan GT-R (R35)</span>
+                                </div>
+                                <div class="info-item">
+                                    <strong>Engine:</strong>
+                                    <span>3.8L Twin-Turbo V6</span>
+                                </div>
+                                <div class="info-item">
+                                    <strong>Horsepower:</strong>
+                                    <span>485 HP (Stock) / 1000+ HP (Modified)</span>
+                                </div>
+                                <div class="info-item">
+                                    <strong>0-60 MPH:</strong>
+                                    <span>2.9 seconds (Stock)</span>
+                                </div>
+                                <div class="info-item">
+                                    <strong>Top Speed:</strong>
+                                    <span>193 MPH</span>
+                                </div>
+                            </div>
+                            
+                            <div class="info-section">
+                                <h6>Performance Rating</h6>
+                                <div class="stats-label">
+                                    <span>Speed</span>
+                                    <span>9.5/10</span>
+                                </div>
+                                <div class="stats-bar">
+                                    <div class="stats-fill" style="width: 95%"></div>
+                                </div>
+                                
+                                <div class="stats-label">
+                                    <span>Acceleration</span>
+                                    <span>9.8/10</span>
+                                </div>
+                                <div class="stats-bar">
+                                    <div class="stats-fill" style="width: 98%"></div>
+                                </div>
+                                
+                                <div class="stats-label">
+                                    <span>Handling</span>
+                                    <span>9/10</span>
+                                </div>
+                                <div class="stats-bar">
+                                    <div class="stats-fill" style="width: 90%"></div>
+                                </div>
+                                
+                                <div class="stats-label">
+                                    <span>Modding Potential</span>
+                                    <span>9/10</span>
+                                </div>
+                                <div class="stats-bar">
+                                    <div class="stats-fill" style="width: 90%"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="movie-appearances">
+                                <h6>Fast Saga Appearances</h6>
+                                <ul class="movie-list">
+                                    <li>Fast & Furious (2009) - Brian O'Conner</li>
+                                    <li>Fast Five (2011) - Brian O'Conner</li>
+                                    <li>Fast & Furious 6 (2013) - Brian O'Conner</li>
+                                    <li>Furious 7 (2015) - Brian O'Conner</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dodge Charger Card -->
+            <div class="card-container dodge fade-in" data-brand="dodge">
+                <div class="card-flip">
+                    <div class="card-front">
+                        <div class="car-name">Dodge Charger</div>
+                        <div class="car-type">Muscle Legend</div>
+                        <img src="/C:\Users\Anshul Shinde\Desktop\SEM 6\FS\images\charger.jpg" alt="Dodge Charger">
+                    </div>
+                    <div class="card-back">
+                        <div class="car-logo">
+                            <i class="fas fa-fire"></i>
+                        </div>
+                        <div class="card-content">
+                            <h5>Dodge Charger</h5>
+                            <p class="subtitle">"I live my life a quarter mile at a time"</p>
+                            
+                            <!-- Completing the Dodge Charger Card that was cut off -->
+                            <div class="info-section">
+                                <h6>Car Specs</h6>
+                                <div class="info-item">
+                                    <strong>Model:</strong>
+                                    <span>1970 Dodge Charger R/T</span>
+                                </div>
+                                <div class="info-item">
+                                    <strong>Engine:</strong>
+                                    <span>426 HEMI V8</span>
+                                </div>
+                                <div class="info-item">
+                                    <strong>Horsepower:</strong>
+                                    <span>425 HP (Stock) / 900+ HP (Modified)</span>
+                                </div>
+                                <div class="info-item">
+                                    <strong>0-60 MPH:</strong>
+                                    <span>5.4 seconds (Stock)</span>
+                                </div>
+                                <div class="info-item">
+                                    <strong>Top Speed:</strong>
+                                    <span>180 MPH (Modified)</span>
+                                </div>
+                            </div>
+                            
+                            <div class="info-section">
+                                <h6>Performance Rating</h6>
+                                <div class="stats-label">
+                                    <span>Speed</span>
+                                    <span>8.5/10</span>
+                                </div>
+                                <div class="stats-bar">
+                                    <div class="stats-fill" style="width: 85%"></div>
+                                </div>
+                                
+                                <div class="stats-label">
+                                    <span>Acceleration</span>
+                                    <span>9/10</span>
+                                </div>
+                                <div class="stats-bar">
+                                    <div class="stats-fill" style="width: 90%"></div>
+                                </div>
+                                
+                                <div class="stats-label">
+                                    <span>Handling</span>
+                                    <span>7/10</span>
+                                </div>
+                                <div class="stats-bar">
+                                    <div class="stats-fill" style="width: 70%"></div>
+                                </div>
+                                
+                                <div class="stats-label">
+                                    <span>Modding Potential</span>
+                                    <span>8.5/10</span>
+                                </div>
+                                <div class="stats-bar">
+                                    <div class="stats-fill" style="width: 85%"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="movie-appearances">
+                                <h6>Fast Saga Appearances</h6>
+                                <ul class="movie-list">
+                                    <li>The Fast and the Furious (2001) - Dominic Toretto</li>
+                                    <li>Fast & Furious (2009) - Dominic Toretto</li>
+                                    <li>Fast Five (2011) - Dominic Toretto</li>
+                                    <li>Furious 7 (2015) - Dominic Toretto</li>
+                                    <li>The Fate of the Furious (2017) - Dominic Toretto</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Skyline GT-R Card -->
+            <div class="card-container nissan fade-in" data-brand="nissan">
+                <div class="card-flip">
+                    <div class="card-front">
+                        <div class="car-name">Nissan Skyline GT-R</div>
+                        <div class="car-type">JDM Classic</div>
+                        <img src="/C:\Users\Anshul Shinde\Desktop\SEM 6\FS\images\gtrskyline.jpeg" alt="Nissan Skyline GT-R">
+                    </div>
+                    <div class="card-back">
+                        <div class="car-logo">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <div class="card-content">
+                            <h5>Nissan Skyline GT-R</h5>
+                            <p class="subtitle">"You know what? This will decimate all"</p>
+                            
+                            <div class="info-section">
+                                <h6>Car Specs</h6>
+                                <div class="info-item">
+                                    <strong>Model:</strong>
+                                    <span>1999 Nissan Skyline GT-R R34</span>
+                                </div>
+                                <div class="info-item">
+                                    <strong>Engine:</strong>
+                                    <span>2.6L RB26DETT Twin-Turbo I6</span>
+                                </div>
+                                <div class="info-item">
+                                    <strong>Horsepower:</strong>
+                                    <span>276 HP (Stock) / 550+ HP (Modified)</span>
+                                </div>
+                                <div class="info-item">
+                                    <strong>0-60 MPH:</strong>
+                                    <span>4.8 seconds (Stock)</span>
+                                </div>
+                                <div class="info-item">
+                                    <strong>Top Speed:</strong>
+                                    <span>165 MPH</span>
+                                </div>
+                            </div>
+                            
+                            <div class="info-section">
+                                <h6>Performance Rating</h6>
+                                <div class="stats-label">
+                                    <span>Speed</span>
+                                    <span>8.5/10</span>
+                                </div>
+                                <div class="stats-bar">
+                                    <div class="stats-fill" style="width: 85%"></div>
+                                </div>
+                                
+                                <div class="stats-label">
+                                    <span>Acceleration</span>
+                                    <span>9/10</span>
+                                </div>
+                                <div class="stats-bar">
+                                    <div class="stats-fill" style="width: 90%"></div>
+                                </div>
+                                
+                                <div class="stats-label">
+                                    <span>Handling</span>
+                                    <span>9.5/10</span>
+                                </div>
+                                <div class="stats-bar">
+                                    <div class="stats-fill" style="width: 95%"></div>
+                                </div>
+                                
+                                <div class="stats-label">
+                                    <span>Modding Potential</span>
+                                    <span>9.5/10</span>
+                                </div>
+                                <div class="stats-bar">
+                                    <div class="stats-fill" style="width: 95%"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="movie-appearances">
+                                <h6>Fast Saga Appearances</h6>
+                                <ul class="movie-list">
+                                    <li>2 Fast 2 Furious (2003) - Brian O'Conner</li>
+                                    <li>Fast & Furious (2009) - Reference</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- RX-7 Card -->
+            <div class="card-container other fade-in" data-brand="other">
+                <div class="card-flip">
+                    <div class="card-front">
+                        <div class="car-name">Mazda RX-7</div>
+                        <div class="car-type">Rotary Power</div>
+                        <img src="/C:\Users\Anshul Shinde\Desktop\SEM 6\FS\images\download.jpeg" alt="Mazda RX-7">
+                    </div>
+                    <div class="card-back">
+                        <div class="car-logo">
+                            <i class="fas fa-rocket"></i>
+                        </div>
+                        <div class="card-content">
+                            <h5>Mazda RX-7</h5>
+                            <p class="subtitle">"Too soon, junior"</p>
+                            
+                            <div class="info-section">
+                                <h6>Car Specs</h6>
+                                <div class="info-item">
+                                    <strong>Model:</strong>
+                                    <span>1993 Mazda RX-7 FD</span>
+                                </div>
+                                <div class="info-item">
+                                    <strong>Engine:</strong>
+                                    <span>1.3L 13B Twin-Rotor</span>
+                                </div>
+                                <div class="info-item">
+                                    <strong>Horsepower:</strong>
+                                    <span>255 HP (Stock) / 400+ HP (Modified)</span>
+                                </div>
+                                <div class="info-item">
+                                    <strong>0-60 MPH:</strong>
+                                    <span>5.2 seconds (Stock)</span>
+                                </div>
+                                <div class="info-item">
+                                    <strong>Top Speed:</strong>
+                                    <span>158 MPH</span>
+                                </div>
+                            </div>
+                            
+                            <div class="info-section">
+                                <h6>Performance Rating</h6>
+                                <div class="stats-label">
+                                    <span>Speed</span>
+                                    <span>8/10</span>
+                                </div>
+                                <div class="stats-bar">
+                                    <div class="stats-fill" style="width: 80%"></div>
+                                </div>
+                                
+                                <div class="stats-label">
+                                    <span>Acceleration</span>
+                                    <span>8.5/10</span>
+                                </div>
+                                <div class="stats-bar">
+                                    <div class="stats-fill" style="width: 85%"></div>
+                                </div>
+                                
+                                <div class="stats-label">
+                                    <span>Handling</span>
+                                    <span>9/10</span>
+                                </div>
+                                <div class="stats-bar">
+                                    <div class="stats-fill" style="width: 90%"></div>
+                                </div>
+                                
+                                <div class="stats-label">
+                                    <span>Modding Potential</span>
+                                    <span>8.5/10</span>
+                                </div>
+                                <div class="stats-bar">
+                                    <div class="stats-fill" style="width: 85%"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="movie-appearances">
+                                <h6>Fast Saga Appearances</h6>
+                                <ul class="movie-list">
+                                    <li>The Fast and the Furious (2001) - Dominic Toretto</li>
+                                    <li>Tokyo Drift (2006) - Han Lue</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-center">
+            <button class="show-more">Show More Cars</button>
+        </div>
+        
+        <div class="footer">
+            <div class="quote">"It don't matter if you win by an inch or a mile. Winning's winning."</div>
+            <p>© 2025 Fast & Furious Car Showcase. For true fans only.</p>
+        </div>
+    </div>
+    
+    <!-- Nitro Button -->
+    <button class="nitro-button">
+        <i class="fas fa-fire"></i> NITRO BOOST
+    </button>
+    
+    <!-- Necessary Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Speedometer animation
+        let speed = 0;
+        const speedElement = document.getElementById('speed-value');
+        
+        function accelerate() {
+            let targetSpeed = Math.floor(Math.random() * 180) + 20;
+            let acceleration = Math.random() * 5 + 1;
+            
+            let interval = setInterval(() => {
+                if (speed < targetSpeed) {
+                    speed += acceleration;
+                    if (speed > targetSpeed) speed = targetSpeed;
+                } else {
+                    speed -= acceleration;
+                    if (speed < 0) speed = 0;
+                }
+                
+                speedElement.textContent = Math.floor(speed);
+                
+                if (speed === targetSpeed || speed === 0) {
+                    clearInterval(interval);
+                    setTimeout(accelerate, 2000);
+                }
+            }, 50);
+        }
+        
+        // Start the speedometer
+        accelerate();
+        
+        // Filter buttons functionality
+        document.querySelectorAll('.selector-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all buttons
+                document.querySelectorAll('.selector-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                
+                // Add active class to clicked button
+                button.classList.add('active');
+                
+                // Get filter value
+                const filter = button.getAttribute('data-filter');
+                
+                // Filter cards
+                document.querySelectorAll('.card-container').forEach(card => {
+                    if (filter === 'all' || card.getAttribute('data-brand') === filter) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+        
+        // Nitro button effect
+        document.querySelector('.nitro-button').addEventListener('click', () => {
+            // Flash effect
+            document.body.style.backgroundColor = 'rgba(255, 0, 0, 0.3)';
+            setTimeout(() => {
+                document.body.style.backgroundColor = '';
+            }, 300);
+            
+            // Boost speedometer
+            speed += 50;
+            if (speed > 180) speed = 180;
+            speedElement.textContent = Math.floor(speed);
+            
+            // Shake effect for cards
+            document.querySelectorAll('.card-container').forEach(card => {
+                card.style.animation = 'shake 0.5s';
+                setTimeout(() => {
+                    card.style.animation = '';
+                }, 500);
+            });
+        });
+        
+        // Animation for when cards come into view
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.2 });
+        
+        document.querySelectorAll('.card-container').forEach(card => {
+            observer.observe(card);
+        });
+        
+        // Show more cars button - placeholder functionality
+        document.querySelector('.show-more').addEventListener('click', function() {
+            this.textContent = 'Coming Soon!';
+            setTimeout(() => {
+                this.textContent = 'Show More Cars';
+            }, 2000);
+        });
+        
+        // Add some shake CSS for the nitro button
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes shake {
+                0% { transform: translateX(0); }
+                25% { transform: translateX(-5px) rotate(-2deg); }
+                50% { transform: translateX(5px) rotate(2deg); }
+                75% { transform: translateX(-5px) rotate(-2deg); }
+                100% { transform: translateX(0); }
+            }
+            
+            .visible {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
