@@ -140,125 +140,133 @@
         }
         
         /* Cards */
-        .card-container {
-            perspective: 2000px;
-            margin-bottom: 30px;
-            height: 500px;
-            min-width: 300px;
-            flex: 0 0 auto;
-            width: calc(33.33% - 14px);
-        }
-        
-        .card-flip {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            transition: transform 0.9s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            transform-style: preserve-3d;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-            border-radius: 15px;
-        }
-        
-        .card-container:hover .card-flip {
-            transform: rotateY(180deg);
-        }
-        
-        .card-front, .card-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
-            border-radius: 15px;
-            overflow: hidden;
-        }
-        
-        .card-front {
-            background-color: #000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 3px solid rgba(255, 0, 0, 0.3);
-            position: relative;
-        }
-        
-        .card-front::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.7));
-            z-index: 1;
-        }
-        
-        .card-front::after {
-            content: 'REV IT UP';
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: white;
-            background-color: rgba(255, 0, 0, 0.8);
-            padding: 10px 25px;
-            border-radius: 20px;
-            font-size: 1rem;
-            font-weight: bold;
-            letter-spacing: 1px;
-            opacity: 0;
-            transition: opacity 0.3s ease, transform 0.3s ease;
-            z-index: 2;
-        }
-        
-        .card-container:hover .card-front::after {
-            opacity: 1;
-            transform: translateX(-50%) translateY(-10px);
-        }
-        
-        .car-name {
-            position: absolute;
-            top: 20px;
-            left: 0;
-            width: 100%;
-            text-align: center;
-            font-size: 2rem;
-            font-weight: bold;
-            text-transform: uppercase;
-            text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
-            z-index: 10;
-        }
-        
-        .car-type {
-            position: absolute;
-            top: 60px;
-            left: 0;
-            width: 100%;
-            text-align: center;
-            font-size: 1rem;
-            text-transform: uppercase;
-            color: rgba(255,255,255,0.7);
-            z-index: 10;
-        }
-        
-        .card-front img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.8s ease;
-            filter: brightness(0.9) contrast(1.1);
-        }
-        
-        .card-container:hover .card-front img {
-            transform: scale(1.2) rotate(5deg);
-            filter: brightness(0.7) blur(3px);
-        }
-        
-        .card-back {
-            transform: rotateY(180deg);
-            display: flex;
-            flex-direction: column;
-            padding: 30px;
-            color: white;
-            background: #111111;
-            overflow-y: auto;
-        }
+    .card-container {
+    perspective: 2000px;
+    position: relative;
+    margin-bottom: 30px;
+    height: 500px;
+    min-width: 300px;
+    flex: 0 0 auto;
+    width: calc(33.33% - 14px);
+    overflow: hidden;
+    box-sizing: border-box;
+    }
+
+    .card-flip {
+    width: 100%;
+    height: 100%;
+    transition: transform 0.9s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transform-style: preserve-3d;
+    position: relative;
+    border-radius: 15px;
+    }
+
+    .card-container:hover .card-flip,
+    .card-container:focus-within .card-flip {
+    transform: rotateY(180deg);
+    }
+    .card-front,
+    .card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 15px;
+    overflow: hidden;
+    top: 0;
+    left: 0;
+    }
+
+    .card-front {
+    background-color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid rgba(255, 0, 0, 0.3);
+    z-index: 2;
+    }
+
+    .card-front::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.7));
+        z-index: 1;
+    }
+
+    .card-front::after {
+        content: 'REV IT UP';
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: white;
+        background-color: rgba(255, 0, 0, 0.8);
+        padding: 10px 25px;
+        border-radius: 20px;
+        font-size: 1rem;
+        font-weight: bold;
+        letter-spacing: 1px;
+        opacity: 0;
+        transition: opacity 0.3s ease, transform 0.3s ease;
+        z-index: 2;
+    }
+
+    .card-container:hover .card-front::after {
+        opacity: 1;
+        transform: translateX(-50%) translateY(-10px);
+    }
+
+    .car-name {
+        position: absolute;
+        top: 20px;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        font-size: 2rem;
+        font-weight: bold;
+        text-transform: uppercase;
+        text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+        z-index: 10;
+    }
+
+    .car-type {
+        position: absolute;
+        top: 60px;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        font-size: 1rem;
+        text-transform: uppercase;
+        color: rgba(255,255,255,0.7);
+        z-index: 10;
+    }
+
+    .card-front img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.8s ease;
+        filter: brightness(0.9) contrast(1.1);
+    }
+
+    .card-container:hover .card-front img {
+        transform: scale(1.2) rotate(5deg);
+        filter: brightness(0.7) blur(3px);
+    }
+
+    .card-back {
+        transform: rotateY(180deg);
+        display: flex;
+        flex-direction: column;
+        padding: 30px;
+        color: white;
+        background: #111111;
+        overflow-y: auto;
+        height: 100%;
+        box-sizing: border-box;
+    }
+
         
         .toyota .card-back {
             background: linear-gradient(135deg, #000000 0%, var(--toyota-color) 120%);
